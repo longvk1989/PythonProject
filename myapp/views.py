@@ -8,6 +8,12 @@ from django.shortcuts import render, redirect
 
 from myapp.models import Post
 
+def home_view(request):
+    if request.user.is_authenticated:
+        return redirect('post_list')
+    else:
+        return redirect('login')
+
 @login_required
 def post_list(request):
     posts = Post.objects.filter(user=request.user).order_by('-created_at')

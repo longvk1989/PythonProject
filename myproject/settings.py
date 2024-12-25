@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-=+n+6u#q2^4f4vy3z$hx25*w(4j^vidd*(%tl2dutnj&b!%f+l
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'pythonproject-lyj4.onrender.com', 'localhost'
+    'pythonproject-lyj4.onrender.com',
+    'localhost',
+    '127.0.0.1',
 ]
 
 
