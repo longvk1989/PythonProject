@@ -5,3 +5,4 @@ packaging==24.2
 pillow==11.0.0
 sqlparse==0.5.3
 tzdata==2024.2
+cloudinary~=1.41.0

@@ -7,6 +7,10 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 
 from myapp.models import Post
+from cloudinary.uploader import upload
+
+import logging
+logger = logging.getLogger('django')
 
 def home_view(request):
     if request.user.is_authenticated:
@@ -17,7 +21,7 @@ def home_view(request):
 @login_required
 def post_list(request):
     posts = Post.objects.filter(user=request.user).order_by('-created_at')
-    query = request.GET.get('q')
+    query = request.GET.get('q', '')
 
     if query:
         posts = posts.filter(title__icontains=query)
@@ -28,7 +32,7 @@ def post_list(request):
 
     print(page_objs.paginator.object_list.count())
 
-    return render(request, 'myapp/post_list.html', {'page_objs': page_objs})
+    return render(request, 'myapp/post_list.html', {'page_objs': page_objs, 'query': query})
 
 @login_required
 def create_post(request):
@@ -37,9 +41,19 @@ def create_post(request):
         content = request.POST.get('content')
         image = request.FILES.get('image')
 
-        print(image)
+        if image:
+            try:
+                logger.debug(f"Uploading image: {image.name}")
+                response = upload(image, resource_type="image")
+                image_url = response['url']
+                logger.debug(f"Upload completed, image url: {image_url}")
 
-        Post.objects.create(title=title, content=content, user=request.user, image=image)
+                Post.objects.create(title=title, content=content, user=request.user, image=image_url)
+            except Exception as e:
+                logger.error(f"Error uploading image: {e}")
+        else:
+            logger.debug("No image found in the request.")
+
         return redirect('post_list')
 
     return render(request, 'myapp/create_post.html')

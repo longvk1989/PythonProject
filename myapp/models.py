@@ -8,7 +8,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
+    image = models.URLField(max_length=500, blank=True, null=True, default="")
 
     def __str__(self):
         return self.title
